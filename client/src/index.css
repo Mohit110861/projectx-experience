@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #0a0a0a;
+  color: #f4f1ea;
+}
+
+::selection { background: #e3182d; color: #fff; }
+
+@layer components {
+  .btn-brand {
+    @apply inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-semibold uppercase tracking-widest text-sm px-6 py-3 rounded-full transition disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 border border-white/25 hover:border-white text-bone font-semibold uppercase tracking-widest text-sm px-6 py-3 rounded-full transition;
+  }
+  .field {
+    @apply w-full px-4 py-3 rounded-lg bg-ink border border-line text-bone placeholder-mute focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition;
+  }
+  .eyebrow {
+    @apply text-brand text-xs font-bold uppercase tracking-wider2;
+  }
+  .card {
+    @apply bg-surface border border-line rounded-2xl;
+  }
+}
+
+/* Dark skin for the dashboard pages, which still use the original light utility classes */
+.legacy-dark .bg-white { background-color: #141414 !important; }
+.legacy-dark .bg-gray-50 { background-color: #1c1c1c !important; }
+.legacy-dark .bg-gray-100, .legacy-dark .bg-gray-200 { background-color: #232323 !important; }
+.legacy-dark .hover\:bg-gray-50:hover, .legacy-dark .hover\:bg-gray-100:hover, .legacy-dark .hover\:bg-gray-200:hover { background-color: #262626 !important; }
+.legacy-dark .bg-gray-900 { background-color: #e3182d !important; }
+.legacy-dark .bg-black { background-color: #141414 !important; border: 1px solid #2a2a2a; border-top: 3px solid #e3182d; }
+.legacy-dark .hover\:bg-black:hover { background-color: #b3101f !important; }
+.legacy-dark .text-gray-900, .legacy-dark .text-gray-800, .legacy-dark .text-black { color: #f4f1ea !important; }
+.legacy-dark .text-gray-700, .legacy-dark .text-gray-600 { color: #c9c6bf !important; }
+.legacy-dark .text-gray-500, .legacy-dark .text-gray-400 { color: #9a9a9a !important; }
+.legacy-dark .border-gray-100, .legacy-dark .border-gray-200, .legacy-dark .border-gray-300 { border-color: #2a2a2a !important; }
+.legacy-dark .divide-gray-100 > * + *, .legacy-dark .divide-gray-200 > * + * { border-color: #2a2a2a !important; }
+.legacy-dark .shadow-sm, .legacy-dark .shadow-md, .legacy-dark .shadow-lg, .legacy-dark .shadow-xl { box-shadow: none !important; }
+.legacy-dark input, .legacy-dark textarea, .legacy-dark select { background-color: #0a0a0a; color: #f4f1ea; border-color: #2a2a2a; }
+.legacy-dark .bg-green-50 { background-color: rgba(34,197,94,.12) !important; }
+.legacy-dark .bg-red-50 { background-color: rgba(227,24,45,.12) !important; }
+.legacy-dark .bg-yellow-50, .legacy-dark .bg-yellow-100 { background-color: rgba(234,179,8,.14) !important; }
+.legacy-dark .bg-blue-50, .legacy-dark .bg-blue-100 { background-color: rgba(59,130,246,.14) !important; }
+.legacy-dark .bg-green-100 { background-color: rgba(34,197,94,.16) !important; }
+.legacy-dark .bg-red-100 { background-color: rgba(227,24,45,.16) !important; }
+
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee 40s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .animate-marquee { animation: none; } }
+.legacy-dark .bg-black .bg-white { background-color: #e3182d !important; color: #fff !important; }
+.legacy-dark .bg-black .bg-white:hover { background-color: #b3101f !important; }
+.legacy-dark .bg-black h1 { font-family: 'Anton', Impact, sans-serif; text-transform: uppercase; font-weight: 400; letter-spacing: 0.01em; font-size: 2.5rem; }
+
+/* Horizontal scrollers (admin tabs, reels row) without a chunky scrollbar */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.thin-scrollbar { scrollbar-width: thin; scrollbar-color: #2a2a2a transparent; }

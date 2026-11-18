@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Project X Experience — Code Guide</title>
+<style>
+  @page { size: A4; margin: 16mm 15mm 18mm 15mm;
+    @bottom-right { content: "Page " counter(page); font: 8.5pt 'Segoe UI', Arial, sans-serif; color: #888; }
+    @bottom-left { content: "Project X Experience — Code Guide"; font: 8.5pt 'Segoe UI', Arial, sans-serif; color: #888; } }
+  @page :first { @bottom-right { content: none; } @bottom-left { content: none; } }
+  :root { color-scheme: light; }
+  html { background: #fff; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; font-family: 'Segoe UI', Arial, sans-serif; font-size: 10.5pt; line-height: 1.55; color: #1d1d1f; margin: 0; }
+  h1, h2, h3, h4 { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.2; color: #0a0a0a; }
+  h1.part { font-size: 26pt; margin: 0 0 4mm; padding-top: 2mm; border-bottom: 3px solid #e3182d; padding-bottom: 3mm; page-break-before: always; }
+  h1.part .num { color: #e3182d; }
+  h2 { font-size: 15pt; margin: 9mm 0 2mm; page-break-after: avoid; }
+  h3 { font-size: 12pt; margin: 6mm 0 1.5mm; page-break-after: avoid; }
+  p { margin: 0 0 2.5mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  code { font-family: Consolas, 'Courier New', monospace; font-size: 9.2pt; background: #f2f2f4; padding: 0.3mm 1.2mm; border-radius: 3px; color: #b3101f; }
+  pre { font-family: Consolas, 'Courier New', monospace; font-size: 8.6pt; line-height: 1.45; background: #111; color: #f4f1ea; padding: 3.5mm 4mm; border-radius: 6px; white-space: pre-wrap; word-break: break-word; margin: 1.5mm 0 3.5mm; page-break-inside: avoid; border-left: 4px solid #e3182d; }
+  pre .c { color: #8fd18f; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; page-break-inside: auto; }
+  th, td { text-align: left; vertical-align: top; padding: 1.8mm 2.2mm; border-bottom: 1px solid #e3e3e6; }
+  th { background: #0a0a0a; color: #fff; font-weight: 600; }
+  tr { page-break-inside: avoid; }
+  .file { border: 1px solid #e3e3e6; border-radius: 8px; padding: 4mm 5mm 2mm; margin: 4mm 0 5mm; page-break-inside: auto; }
+  .file > h3 { margin-top: 0; font-family: Consolas, monospace; font-size: 11.5pt; color: #b3101f; }
+  .file .meta { font-size: 8.8pt; color: #777; margin: -1mm 0 2.5mm; }
+  .simple { background: #fff4f5; border-left: 4px solid #e3182d; padding: 2.5mm 4mm; border-radius: 4px; margin: 2mm 0 3mm; }
+  .simple b:first-child { color: #b3101f; }
+  .tip { background: #f1f7ff; border-left: 4px solid #2f6fdd; padding: 2.5mm 4mm; border-radius: 4px; margin: 2mm 0 3mm; }
+  .cover { height: 260mm; display: flex; flex-direction: column; justify-content: space-between; background: #0a0a0a; color: #f4f1ea; margin: -16mm -15mm 0; padding: 30mm 22mm 22mm; }
+  .cover .logo { font-size: 46pt; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+  .cover .logo span { color: #e3182d; }
+  .cover .exp { letter-spacing: 9px; font-size: 11pt; font-weight: 600; margin-top: 3mm; opacity: .85; }
+  .cover h1 { color: #fff; font-size: 30pt; margin: 22mm 0 4mm; }
+  .cover p { font-size: 12.5pt; opacity: .85; max-width: 140mm; }
+  .cover .small { font-size: 9.5pt; opacity: .6; }
+  .toc { columns: 2; column-gap: 10mm; font-size: 10pt; }
+  .toc div { break-inside: avoid; margin-bottom: 1.2mm; }
+  .toc .h { font-weight: 700; margin-top: 3mm; color: #b3101f; }
+  .tree { font-family: Consolas, monospace; font-size: 8.8pt; line-height: 1.5; background: #f7f7f8; border: 1px solid #e3e3e6; border-radius: 6px; padding: 3mm 4mm; white-space: pre; page-break-inside: avoid; }
+  .tree b { color: #b3101f; }
+  .tree i { color: #888; font-style: normal; }
+  .flow { display: flex; align-items: stretch; gap: 2mm; margin: 3mm 0 5mm; page-break-inside: avoid; }
+  .flow div { flex: 1; border: 1.5px solid #0a0a0a; border-radius: 6px; padding: 2.5mm; text-align: center; font-size: 9pt; }
+  .flow div b { display: block; font-size: 10.5pt; margin-bottom: 1mm; }
+  .flow .arrow { flex: 0 0 6mm; border: none; font-size: 16pt; color: #e3182d; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .flow .red { background: #0a0a0a; color: #fff; }
+  .steps { counter-reset: s; list-style: none; padding-left: 0; }
+  .steps li { counter-increment: s; position: relative; padding-left: 9mm; margin-bottom: 2mm; }
+  .steps li::before { content: counter(s); position: absolute; left: 0; top: 0.2mm; width: 6mm; height: 6mm; border-radius: 50%; background: #e3182d; color: #fff; font-size: 8.5pt; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .pill { display: inline-block; font-size: 8pt; font-weight: 700; padding: 0.3mm 2mm; border-radius: 10px; background: #0a0a0a; color: #fff; margin-right: 1mm; }
+  .pill.get { background: #2f6fdd; } .pill.post { background: #1f9d55; } .pill.put { background: #c07a00; } .pill.del { background: #e3182d; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div>
+    <div class="logo">PROJECT<span> X</span></div>
+    <div class="exp">EXPERIENCE</div>
+    <h1>Code Guide</h1>
+    <p>Every file and every page of the Project X event website, explained in simple language — what it does, how the parts talk to each other, and where to change things.</p>
+  </div>
+  <div>
+    <p class="small">Website stack: React (frontend) · Node.js + Express (backend) · MySQL (database)</p>
+    <p class="small">Project folder: Documents\EVENT · Prepared 17 November 2026</p>
+  </div>
+</section>
+
+<h1 class="part" style="page-break-before: always;">Contents</h1>
+<div class="toc">
+  <div class="h">Part 1 — The big picture</div>
+  <div>1.1 What this website is</div>
+  <div>1.2 The three layers (frontend, backend, database)</div>
+  <div>1.3 Folder map — every file at a glance</div>
+  <div>1.4 How to start the website</div>
+  <div>1.5 The database tables</div>
+  <div class="h">Part 2 — Backend (server folder)</div>
+  <div>2.1 Settings &amp; startup files</div>
+  <div>2.2 Database connection files (config)</div>
+  <div>2.3 Models — talking to MySQL</div>
+  <div>2.4 Middleware — the security guard</div>
+  <div>2.5 Routes — the list of addresses (URLs)</div>
+  <div>2.6 Controllers — the actual work</div>
+  <div>2.7 Utils — helpers (email, uploads)</div>
+  <div>2.8 Seed script — demo data</div>
+  <div>2.9 Full API list</div>
+  <div class="h">Part 3 — Frontend (client folder)</div>
+  <div>3.1 Setup &amp; styling files</div>
+  <div>3.2 Starting point (main.jsx, App.jsx)</div>
+  <div>3.3 Helpers &amp; shared data</div>
+  <div>3.4 Context — shared memory</div>
+  <div>3.5 Components — reusable pieces</div>
+  <div>3.6 Public pages</div>
+  <div>3.7 Admin dashboard pages</div>
+  <div class="h">Part 4 — How things work, step by step</div>
+  <div>4.1 Sign up with OTP</div>
+  <div>4.2 Log in</div>
+  <div>4.3 Booking a spot</div>
+  <div>4.4 Admin approves &amp; records payment</div>
+  <div>4.5 Blocking a user</div>
+  <div>4.6 Uploading photos &amp; reels</div>
+  <div>4.7 Playing a reel</div>
+  <div>4.8 Excel download</div>
+  <div>4.9 Changing the header</div>
+  <div class="h">Part 5 — Extras</div>
+  <div>5.1 Common changes — where to edit</div>
+  <div>5.2 Security notes</div>
+  <div>5.3 Word list (glossary)</div>
+</div>
+
+<!-- ===================== PART 1 ===================== -->
+<h1 class="part"><span class="num">Part 1</span> — The big picture</h1>
+
+<h2>1.1 What this website is</h2>
+<p><b>Project X Experience</b> is an event booking website. Visitors can see upcoming parties, look at photos and reels, create an account and request a spot at an event. The <b>admin</b> (you) approves requests, records payments, blocks bad users, uploads photos and reels, edits the top header, and downloads an Excel sheet of everyone who paid.</p>
+<div class="simple"><b>In simple words:</b> it is like a mini "BookMyShow" made only for Project X parties, with a control room (the admin dashboard) where you manage everything.</div>
+
+<h2>1.2 The three layers</h2>
+<p>The website is split into three parts that work together. Each part runs separately on your computer.</p>
+<div class="flow">
+  <div><b>Frontend</b>React website<br>client folder<br>port 5173<br><i>what people see</i></div>
+  <div class="arrow">⇄</div>
+  <div class="red"><b>Backend</b>Node.js + Express<br>server folder<br>port 5000<br><i>the brain / rules</i></div>
+  <div class="arrow">⇄</div>
+  <div><b>Database</b>MySQL<br>database "eventora"<br>port 3306<br><i>the memory</i></div>
+</div>
+<ul>
+  <li><b>Frontend (client)</b> — the pages in the browser: home page, event page, login, admin dashboard. Built with <b>React</b> (a JavaScript library for building pages out of small pieces called components) and styled with <b>Tailwind CSS</b>.</li>
+  <li><b>Backend (server)</b> — a program that receives requests from the frontend, checks who is asking (login), applies the rules ("you can't book a past event"), and reads/writes the database. Built with <b>Node.js</b> and <b>Express</b>.</li>
+  <li><b>Database (MySQL)</b> — stores everything permanently: users, events, bookings, gallery photos, reels and site settings, in tables (like Excel sheets).</li>
+</ul>
+<div class="simple"><b>Example:</b> when you open the home page, React asks the backend "give me all events" (<code>GET /api/events</code>). The backend reads the <code>events</code> table in MySQL and sends the list back. React then draws the event cards.</div>
+
+<h2>1.3 Folder map — every file at a glance</h2>
+<div class="tree"><b>EVENT/</b>
+├── package.json            <i>runs frontend + backend together (npm run dev)</i>
+├── README.md               <i>setup instructions</i>
+├── docs/code-guide/        <i>this guide</i>
+│
+├── <b>server/</b>                 <i>BACKEND</i>
+│   ├── server.js           <i>starts the backend</i>
+│   ├── .env / .env.example <i>passwords &amp; settings (MySQL, email, JWT)</i>
+│   ├── schema.sql          <i>table designs for MySQL</i>
+│   ├── seed.js             <i>fills the database with demo data</i>
+│   ├── nodemon.json        <i>auto-restart settings</i>
+│   ├── config/   db.js · migrations.js · defaultContent.js
+│   ├── models/   User.js · Event.js · Booking.js · OTP.js
+│   ├── middleware/ auth.js
+│   ├── routes/   auth.js · events.js · bookings.js · admin.js · content.js
+│   ├── controllers/ authController · eventController · bookingController
+│   │                adminController · contentController
+│   ├── utils/    email.js · upload.js
+│   └── uploads/  images/ · videos/   <i>files you upload from admin</i>
+│
+└── <b>client/</b>                 <i>FRONTEND</i>
+    ├── index.html · vite.config.js · tailwind.config.js · postcss.config.js
+    ├── public/media/       <i>Instagram photos, posters, logo</i>
+    └── src/
+        ├── main.jsx · App.jsx · index.css
+        ├── utils/axios.js      <i>how the frontend calls the backend</i>
+        ├── data/brand.js       <i>fixed brand text (stats, series names)</i>
+        ├── context/  AuthContext.jsx · SiteContext.jsx
+        ├── components/ Navbar · Footer · Logo · ReelPlayer
+        └── pages/
+            ├── Home · EventDetail · Login · Register · UserDashboard
+            ├── PaymentSuccess · PaymentFailed
+            └── admin/ AdminDashboard · ui · Overview · EventsTab · BookingsTab
+                       UsersTab · GalleryTab · ReelsTab · HeaderTab</div>
+
+<h2>1.4 How to start the website</h2>
+<ol>
+  <li>Make sure the <b>MySQL80</b> service is running (it starts with Windows on your PC).</li>
+  <li>Open the <code>EVENT</code> folder in VS Code and open a terminal.</li>
+  <li>Run <code>npm run dev</code>. This starts the backend (port 5000) and the frontend (port 5173) together.</li>
+  <li>Open <code>http://localhost:5173</code> in the browser.</li>
+</ol>
+<table>
+  <tr><th>Command</th><th>What it does</th></tr>
+  <tr><td><code>npm run dev</code></td><td>Starts both parts in development mode (auto-reload when you edit code).</td></tr>
+  <tr><td><code>npm run seed --prefix server</code></td><td>Deletes users/events/bookings and refills them with demo data. Gallery, reels and header settings are not touched.</td></tr>
+  <tr><td><code>npm run build</code></td><td>Makes an optimised version of the frontend for putting online.</td></tr>
+  <tr><td><code>npm run install:all</code></td><td>Installs all libraries for server and client (first time only).</td></tr>
+</table>
+<div class="tip"><b>Demo logins:</b> admin@eventora.com / password123 (admin) and user@eventora.com / password123 (normal user).</div>
+
+<h2>1.5 The database tables</h2>
+<p>The database is called <b>eventora</b>. It has 7 tables. Think of each table as an Excel sheet: rows are records, columns are fields.</p>
+<table>
+  <tr><th style="width:22%">Table</th><th>What it stores</th><th style="width:38%">Important columns</th></tr>
+  <tr><td><b>users</b></td><td>Everyone with an account, including admins.</td><td>name, email (unique), password (scrambled), role (user/admin), is_verified, <b>is_blocked</b>, phone</td></tr>
+  <tr><td><b>events</b></td><td>Every party, past and upcoming.</td><td>title, description, date, location, category, total_seats, available_seats, image, ticket_price, created_by</td></tr>
+  <tr><td><b>bookings</b></td><td>A user's request for a spot at an event.</td><td>user_id, event_id, status (pending/confirmed/cancelled), payment_status (paid/not_paid), amount, payment_method, payment_ref, paid_at</td></tr>
+  <tr><td><b>otps</b></td><td>6-digit codes for sign-up and booking. Valid 5 minutes.</td><td>email, otp, action (account_verification / event_booking), created_at</td></tr>
+  <tr><td><b>gallery</b></td><td>Photos shown in "The Gallery".</td><td>image_url, caption, sort_order</td></tr>
+  <tr><td><b>reels</b></td><td>Reels shown in the "Reels" row.</td><td>title, video_url, cover_url, instagram_url, sort_order</td></tr>
+  <tr><td><b>settings</b></td><td>Header &amp; site text (one row per setting).</td><td>setting_key, setting_value — e.g. announcement_text, hero_image</td></tr>
+</table>
+<p><b>How tables connect:</b> a booking points to one user (<code>user_id</code>) and one event (<code>event_id</code>). These links are called <b>foreign keys</b>. If an event is deleted, its bookings stay but show "Deleted event". If a user is deleted, their bookings are deleted too.</p>
+<div class="simple"><b>Slots:</b> <code>total_seats</code> is how many spots the event has. <code>available_seats</code> goes down by 1 only when the admin <b>confirms</b> a booking, and goes back up if a confirmed booking is cancelled. A request that is only "pending" does not use a slot yet.</div>
+
+
+<!-- ===================== PART 2 ===================== -->
+<h1 class="part"><span class="num">Part 2</span> — Backend (server folder)</h1>
+<p>The backend is a Node.js program. Its job: <b>listen</b> for requests from the website, <b>check</b> them, <b>do the work</b> in MySQL, and <b>answer</b> with data (JSON). It follows a clean pattern you will see in every feature:</p>
+<div class="flow">
+  <div><b>Route</b>"which address?"<br><code>routes/</code></div><div class="arrow">→</div>
+  <div><b>Middleware</b>"are you allowed?"<br><code>middleware/</code></div><div class="arrow">→</div>
+  <div class="red"><b>Controller</b>"do the job"<br><code>controllers/</code></div><div class="arrow">→</div>
+  <div><b>Model</b>"talk to MySQL"<br><code>models/</code></div>
+</div>
+<div class="simple"><b>Restaurant example:</b> the <b>route</b> is the menu item you order, the <b>middleware</b> is the guard checking your ID at the door, the <b>controller</b> is the chef who cooks, and the <b>model</b> is the store room where ingredients are kept.</div>
+
+<h2>2.1 Settings &amp; startup files</h2>
+
+<div class="file"><h3>server/server.js</h3><div class="meta">46 lines · the starting point of the backend</div>
+<p>This is the first file that runs. It sets up Express (the web server library), plugs in all the routes, and connects to MySQL.</p>
+<ul>
+  <li><code>app.use(cors())</code> — allows the website on port 5173 to talk to the server on port 5000.</li>
+  <li><code>app.use(express.json())</code> — lets the server read JSON data sent by the website.</li>
+  <li>Plugs in the five route files: <code>/api/auth</code>, <code>/api/events</code>, <code>/api/bookings</code>, <code>/api/admin</code>, and <code>/api</code> (gallery, reels, settings).</li>
+  <li><code>/uploads</code> — makes uploaded photos and videos downloadable by the browser.</li>
+  <li><code>initDB()</code> — creates the database and tables if missing, then starts listening on port 5000. Every minute it deletes expired OTP codes.</li>
+</ul>
+<pre>initDB()
+  .then(() =&gt; {
+    console.log('MySQL Connected');
+    setInterval(() =&gt; OTP.cleanupExpired().catch(() =&gt; {}), 60 * 1000); <span class="c">// clean old OTPs</span>
+    app.listen(PORT, () =&gt; console.log(`Server running on port ${PORT}`));
+  })
+  .catch(err =&gt; { console.error('MySQL Connection Error:', err.message); process.exit(1); });</pre>
+<div class="simple"><b>In simple words:</b> "Open the shop: connect to the database, then start answering customers."</div>
+</div>
+
+<div class="file"><h3>server/.env and server/.env.example</h3><div class="meta">secret settings · .env is never shared or put in git</div>
+<p>Holds private values the code reads with <code>process.env.NAME</code>:</p>
+<table>
+  <tr><th>Setting</th><th>Meaning</th></tr>
+  <tr><td><code>DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME</code></td><td>How to log in to MySQL (localhost, 3306, root, your password, eventora).</td></tr>
+  <tr><td><code>JWT_SECRET</code></td><td>Secret key used to sign login tokens. Change it to a long random text before going live.</td></tr>
+  <tr><td><code>EMAIL_USER, EMAIL_PASS</code></td><td>Gmail address + App Password for sending OTP and confirmation emails. If empty, OTPs are printed in the terminal instead.</td></tr>
+  <tr><td><code>PORT</code></td><td>Backend port (5000).</td></tr>
+</table>
+<p><code>.env.example</code> is the same list with empty values — a template for anyone setting up the project.</p>
+</div>
+
+<div class="file"><h3>server/package.json</h3><div class="meta">list of libraries + commands</div>
+<p>Lists the libraries the backend needs and the commands <code>npm start</code>, <code>npm run dev</code>, <code>npm run seed</code>.</p>
+<table>
+  <tr><th>Library</th><th>Used for</th></tr>
+  <tr><td>express</td><td>The web server (routes, requests, responses).</td></tr>
+  <tr><td>mysql2</td><td>Talking to MySQL.</td></tr>
+  <tr><td>bcryptjs</td><td>Scrambling (hashing) passwords so they're never stored as plain text.</td></tr>
+  <tr><td>jsonwebtoken</td><td>Creating login tokens (JWT).</td></tr>
+  <tr><td>nodemailer</td><td>Sending emails through Gmail.</td></tr>
+  <tr><td>multer</td><td>Receiving uploaded files (photos, videos).</td></tr>
+  <tr><td>exceljs</td><td>Creating the Excel (.xlsx) download.</td></tr>
+  <tr><td>cors, dotenv</td><td>Allow the website to connect; read the .env file.</td></tr>
+  <tr><td>nodemon (dev)</td><td>Restarts the server automatically when you save a file.</td></tr>
+</table>
+</div>
+
+<div class="file"><h3>server/nodemon.json</h3><div class="meta">3 lines</div>
+<p>Tells nodemon to <b>ignore</b> the <code>uploads</code> folder. Without this, every uploaded photo would restart the server in the middle of the upload.</p>
+</div>
+
+<div class="file"><h3>server/schema.sql</h3><div class="meta">87 lines · the design of every table</div>
+<p>Written in SQL (the language of databases). Each <code>CREATE TABLE IF NOT EXISTS</code> block designs one table: column names, types and rules. "IF NOT EXISTS" means it never deletes existing data — it only creates tables that are missing.</p>
+<pre>CREATE TABLE IF NOT EXISTS bookings (
+    id              INT AUTO_INCREMENT PRIMARY KEY,   <span class="c">-- 1, 2, 3 ... automatic</span>
+    user_id         INT NOT NULL,                     <span class="c">-- who booked</span>
+    event_id        INT NULL,                         <span class="c">-- which event</span>
+    status          ENUM('confirmed','cancelled','pending') DEFAULT 'pending',
+    payment_status  ENUM('paid','not_paid') DEFAULT 'not_paid',
+    amount          DECIMAL(10, 2) NOT NULL,
+    ...
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE SET NULL
+);</pre>
+<ul>
+  <li><code>ENUM(...)</code> — the column can only hold one of the listed words.</li>
+  <li><code>ON DELETE CASCADE</code> — delete the user → their bookings are deleted too.</li>
+  <li><code>ON DELETE SET NULL</code> — delete the event → bookings stay, event becomes empty ("Deleted event").</li>
+  <li><code>INDEX</code> lines make searching faster (e.g. bookings by user + event).</li>
+</ul>
+<p>You never need to run this by hand: the server runs it automatically at start-up.</p>
+</div>
+
+<h2>2.2 Database connection files (config folder)</h2>
+
+<div class="file"><h3>server/config/db.js</h3><div class="meta">49 lines · the connection to MySQL</div>
+<ul>
+  <li>Creates a <b>pool</b> — a group of ready-made connections to MySQL that all the code shares (faster than connecting every time).</li>
+  <li>Sets every connection to <b>UTC time</b> (<code>SET time_zone = '+00:00'</code>) so the times saved by MySQL and by the code match. The website then shows them in Indian time.</li>
+  <li><code>initDB()</code> — runs at start-up: creates the <code>eventora</code> database if missing, runs <code>schema.sql</code>, then the migrations, then adds default content.</li>
+</ul>
+<pre>const pool = mysql.createPool({ host, port, user, password, database: DB_NAME, connectionLimit: 10, timezone: 'Z' });
+pool.on('connection', (conn) =&gt; conn.query("SET time_zone = '+00:00'"));</pre>
+<div class="simple"><b>In simple words:</b> "Keep 10 phone lines open to the database and give one to whoever needs it."</div>
+</div>
+
+<div class="file"><h3>server/config/migrations.js</h3><div class="meta">20 lines · adds new columns to old databases</div>
+<p><code>CREATE TABLE IF NOT EXISTS</code> does not add new columns to a table that already exists. This file checks the database for 5 newer columns (<code>users.is_blocked</code>, <code>users.phone</code>, <code>bookings.payment_method</code>, <code>bookings.payment_ref</code>, <code>bookings.paid_at</code>) and adds any that are missing with <code>ALTER TABLE ... ADD COLUMN</code>. Your existing data is kept.</p>
+<div class="tip"><b>Adding a new column later?</b> Add it to <code>schema.sql</code> <i>and</i> to the list at the top of this file.</div>
+</div>
+
+<div class="file"><h3>server/config/defaultContent.js</h3><div class="meta">54 lines · starting gallery, reels and header text</div>
+<p>When the <code>gallery</code> or <code>reels</code> tables are <b>empty</b>, this file fills them with the photos and reels taken from the Project X Instagram. It also adds default header settings (announcement text, hero text, Instagram link) using <code>INSERT IGNORE</code>, which never overwrites what you've already changed in the admin.</p>
+</div>
+
+<h2>2.3 Models — talking to MySQL (models folder)</h2>
+<p>A model is a small set of functions for one table. Controllers never write SQL for the main tables directly; they call these functions. Each model also has a "to..." function that converts a database row (e.g. <code>ticket_price</code>) into the shape the website expects (e.g. <code>ticketPrice</code>, plus <code>_id</code>).</p>
+
+<div class="file"><h3>server/models/User.js</h3><div class="meta">45 lines</div>
+<table>
+  <tr><th>Function</th><th>What it does</th></tr>
+  <tr><td><code>toUser(row)</code></td><td>Turns a row into <code>{ _id, name, email, role, isVerified, isBlocked, phone }</code>. The password is only included when asked (for login checking).</td></tr>
+  <tr><td><code>findById(id)</code></td><td>Get one user by number.</td></tr>
+  <tr><td><code>findByEmail(email)</code></td><td>Get one user by email (used at login/sign-up).</td></tr>
+  <tr><td><code>create({...})</code></td><td>Insert a new user.</td></tr>
+  <tr><td><code>setVerified(email)</code></td><td>Mark the account as verified after the OTP is correct.</td></tr>
+</table>
+<pre>const findByEmail = async (email, opts = { withPassword: true }) =&gt; {
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    return toUser(rows[0], opts);
+};</pre>
+<div class="tip"><b>The <code>?</code> marks</b> are placeholders. MySQL safely fills them with the values in the array. This stops "SQL injection" hacking — never glue user text directly into SQL.</div>
+</div>
+
+<div class="file"><h3>server/models/Event.js</h3><div class="meta">89 lines</div>
+<table>
+  <tr><th>Function</th><th>What it does</th></tr>
+  <tr><td><code>find({ category, search })</code></td><td>List events, optionally filtered by category or by title search (<code>LIKE '%word%'</code>), sorted by date. Also joins the creator's name.</td></tr>
+  <tr><td><code>findById(id)</code></td><td>One event.</td></tr>
+  <tr><td><code>create(data)</code></td><td>Insert an event; available seats start equal to total seats.</td></tr>
+  <tr><td><code>update(id, data)</code></td><td>Change only the fields that were sent (title, date, price, slots…). A whitelist (<code>UPDATABLE</code>) decides which fields can be changed.</td></tr>
+  <tr><td><code>remove(id)</code></td><td>Delete an event.</td></tr>
+</table>
+</div>
+
+<div class="file"><h3>server/models/Booking.js</h3><div class="meta">91 lines</div>
+<p>Bookings are always returned "populated": instead of just a user number and event number, each booking includes the user's name/email/phone and the full event details. This is done with one SQL query that <b>joins</b> three tables:</p>
+<pre>SELECT b.*, u.name AS u_name, u.email AS u_email, ... , e.title AS e_title, ...
+FROM bookings b
+JOIN users u ON u.id = b.user_id
+LEFT JOIN events e ON e.id = b.event_id</pre>
+<table>
+  <tr><th>Function</th><th>What it does</th></tr>
+  <tr><td><code>findAll()</code></td><td>Every booking, newest first (admin).</td></tr>
+  <tr><td><code>findByUser(userId)</code></td><td>One user's bookings (My Tickets page).</td></tr>
+  <tr><td><code>findById(id)</code></td><td>One booking with details.</td></tr>
+  <tr><td><code>hasActiveBooking(userId, eventId)</code></td><td>Stops double booking — true if the user already has a pending/confirmed booking for that event.</td></tr>
+  <tr><td><code>create({...})</code></td><td>Insert a new booking request (status pending, not paid).</td></tr>
+</table>
+</div>
+
+<div class="file"><h3>server/models/OTP.js</h3><div class="meta">31 lines</div>
+<ul>
+  <li><code>replace(email, otp, action)</code> — deletes the old code for that email and saves a new one.</li>
+  <li><code>findValid(email, otp, action)</code> — finds a matching code created in the <b>last 5 minutes</b>.</li>
+  <li><code>deleteById(id)</code> — removes a code after it's used (one-time use).</li>
+  <li><code>cleanupExpired()</code> — deletes codes older than 5 minutes (runs every minute).</li>
+</ul>
+</div>
+
+<h2>2.4 Middleware — the security guard</h2>
+<div class="file"><h3>server/middleware/auth.js</h3><div class="meta">34 lines</div>
+<p>Two checks that run <b>before</b> a controller:</p>
+<ul>
+  <li><b><code>protect</code></b> — "are you logged in?" It reads the token from the request header (<code>Authorization: Bearer &lt;token&gt;</code>), verifies it with <code>JWT_SECRET</code>, loads the user from MySQL and attaches it as <code>req.user</code>. If there's no token, a fake token, or the user is <b>blocked</b>, it stops the request (401 or 403).</li>
+  <li><b><code>admin</code></b> — "are you the admin?" Lets the request through only if <code>req.user.role === 'admin'</code>.</li>
+</ul>
+<pre>const decoded = jwt.verify(token, process.env.JWT_SECRET);
+req.user = await User.findById(decoded.id);
+if (req.user.isBlocked) {
+    return res.status(403).json({ message: 'Your account has been blocked. Contact Project X.', blocked: true });
+}
+next();   <span class="c">// all good → go to the controller</span></pre>
+<div class="simple"><b>In simple words:</b> the token is like a wristband you get at the entrance (login). Every time you ask for something private, the guard checks your wristband.</div>
+</div>
+
+<h2>2.5 Routes — the list of addresses</h2>
+<p>A route file connects a URL + method (GET = read, POST = create, PUT = update, DELETE = remove) to a controller function, with the guards in between.</p>
+<div class="file"><h3>server/routes/auth.js · events.js · bookings.js</h3><div class="meta">9–12 lines each</div>
+<pre>router.post('/register', register);                     <span class="c">// auth.js</span>
+router.get('/', getEvents);                               <span class="c">// events.js — anyone</span>
+router.post('/', protect, admin, createEvent);            <span class="c">// events.js — admin only</span>
+router.post('/', protect, bookEvent);                     <span class="c">// bookings.js — logged-in users</span>
+router.put('/:id/confirm', protect, admin, confirmBooking);</pre>
+<p><code>:id</code> means "a number goes here", e.g. <code>/api/bookings/42/confirm</code>.</p>
+</div>
+<div class="file"><h3>server/routes/admin.js</h3><div class="meta">21 lines · everything here is admin-only</div>
+<p>Starts with <code>router.use(protect, admin)</code>, so every address in this file needs an admin login. Contains stats, users, block/unblock, bookings, payment update, Excel export and single image upload (event posters).</p>
+</div>
+<div class="file"><h3>server/routes/content.js</h3><div class="meta">25 lines · gallery, reels, settings</div>
+<p>Reading (GET) gallery, reels and settings is <b>public</b> (the home page needs them). Adding, editing and deleting is admin-only. Upload routes use multer (see <code>utils/upload.js</code>): <code>upload.array('images', 30)</code> for up to 30 gallery photos, <code>upload.fields(video, cover)</code> for reels, <code>upload.fields(heroImage, heroVideo)</code> for the header.</p>
+</div>
+
+
+<h2>2.6 Controllers — the actual work</h2>
+<p>Each controller function receives <code>req</code> (the request: body, URL params, logged-in user) and <code>res</code> (used to send the answer). Every function is wrapped in <code>try { ... } catch</code> so an error sends a clean "Server Error" message instead of crashing the server.</p>
+
+<div class="file"><h3>server/controllers/authController.js</h3><div class="meta">98 lines · sign up, log in, verify OTP</div>
+<table>
+  <tr><th style="width:24%">Function</th><th>Step by step</th></tr>
+  <tr><td><code>register</code></td><td>1) Check name/email/password are filled. 2) Stop if the email already exists. 3) Hash the password with bcrypt. 4) Save the user as <b>not verified</b>, role always "user" (nobody can make themselves admin). 5) Create a 6-digit OTP and email it.</td></tr>
+  <tr><td><code>login</code></td><td>1) Find user by email. 2) Compare the password with the hash. 3) If blocked → refuse. 4) If not verified → send a fresh OTP and ask for it. 5) Otherwise send back the user info + a <b>JWT token</b> valid 30 days.</td></tr>
+  <tr><td><code>verifyOTP</code></td><td>1) Check the code is correct and under 5 minutes old. 2) Refuse if blocked. 3) Mark verified, delete the code, return token (user is now logged in).</td></tr>
+</table>
+<pre>const salt = await bcrypt.genSalt(10);
+const hashedPassword = await bcrypt.hash(password, salt);   <span class="c">// "password123" → "$2a$10$Xk9..." (can't be reversed)</span>
+...
+const generateToken = (id, role) =&gt; jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '30d' });</pre>
+<div class="simple"><b>Why hash passwords?</b> Even if someone steals the database, they only see scrambled text, not real passwords. bcrypt can check "is this the right password?" without ever un-scrambling it.</div>
+</div>
+
+<div class="file"><h3>server/controllers/eventController.js</h3><div class="meta">65 lines</div>
+<ul>
+  <li><code>getEvents</code> — list events (supports <code>?category=</code> and <code>?search=</code>).</li>
+  <li><code>getEventById</code> — one event, or 404 "Event not found".</li>
+  <li><code>createEvent</code> — admin creates an event; checks required fields; slots left = total slots.</li>
+  <li><code>updateEvent</code> — admin edits an event (only allowed fields change).</li>
+  <li><code>deleteEvent</code> — admin deletes an event.</li>
+</ul>
+</div>
+
+<div class="file"><h3>server/controllers/bookingController.js</h3><div class="meta">130 lines · booking rules</div>
+<table>
+  <tr><th style="width:24%">Function</th><th>What it does</th></tr>
+  <tr><td><code>sendBookingOTP</code></td><td>Creates a booking OTP for the logged-in user and emails it.</td></tr>
+  <tr><td><code>bookEvent</code></td><td>Checks, in order: OTP valid → event exists → <b>event not in the past</b> → slots left → no existing active booking. Then saves a <b>pending</b> booking with amount = ticket price, and deletes the OTP.</td></tr>
+  <tr><td><code>confirmBooking</code></td><td>Admin approves. Uses a <b>transaction</b> with row locks so two admins clicking at the same moment can't give away the same last slot. Sets status confirmed, payment paid/not paid, reduces <code>available_seats</code> by 1, then emails the user.</td></tr>
+  <tr><td><code>getMyBookings</code></td><td>User → their own bookings. Admin → all bookings.</td></tr>
+  <tr><td><code>cancelBooking</code></td><td>The owner or admin cancels. If it was confirmed, the slot is given back (+1). Also uses a transaction.</td></tr>
+</table>
+<pre>await conn.beginTransaction();
+const [[booking]] = await conn.query('SELECT * FROM bookings WHERE id = ? FOR UPDATE', [id]); <span class="c">// lock this row</span>
+const [[event]]   = await conn.query('SELECT * FROM events WHERE id = ? FOR UPDATE', [booking.event_id]);
+if (event.available_seats &lt;= 0) { await conn.rollback(); return res.status(400)... }
+await conn.query("UPDATE bookings SET status = 'confirmed' ...");
+await conn.query('UPDATE events SET available_seats = available_seats - 1 WHERE id = ?', [event.id]);
+await conn.commit();   <span class="c">// save both changes together, or neither</span></pre>
+<div class="simple"><b>Transaction in simple words:</b> "Do these steps as one package. If anything fails in the middle, undo everything." This keeps the slot count always correct.</div>
+</div>
+
+<div class="file"><h3>server/controllers/adminController.js</h3><div class="meta">195 lines · admin dashboard data</div>
+<table>
+  <tr><th style="width:24%">Function</th><th>What it does</th></tr>
+  <tr><td><code>getStats</code></td><td>Numbers for the Overview: total/blocked/new users, upcoming events, pending/confirmed/cancelled bookings, <b>revenue collected</b> (paid and not cancelled), <b>outstanding</b> (confirmed but unpaid), paying users, and slots + revenue per event.</td></tr>
+  <tr><td><code>listUsers</code></td><td>All users with their number of bookings, confirmed bookings, total paid and last booking date.</td></tr>
+  <tr><td><code>setBlocked</code></td><td>Blocks/unblocks a user. You can't block yourself or another admin. Blocking also cancels that user's pending requests.</td></tr>
+  <tr><td><code>listBookings</code></td><td>All bookings for the Bookings &amp; Payments tab.</td></tr>
+  <tr><td><code>updatePayment</code></td><td>Records a payment: paid/not paid, method (UPI, cash, card, bank_transfer, online, complimentary), reference number, amount. Sets <code>paid_at</code> to now the first time it's marked paid; clears it if changed back.</td></tr>
+  <tr><td><code>exportExcel</code></td><td>Builds an <b>.xlsx</b> file with 3 sheets — Paid (or All) Bookings, Revenue by Event, Users — with a red header row, frozen header, filters, ₹ formatting and TOTAL rows. <code>?type=paid</code> (default) or <code>?type=all</code>.</td></tr>
+</table>
+<pre>const wb = new ExcelJS.Workbook();
+const ws1 = wb.addWorksheet('Paid Bookings');
+ws1.columns = [ { header: 'Name', key: 'name', width: 22 }, { header: 'Email', key: 'email', width: 28 }, ... ];
+bookings.forEach(b =&gt; ws1.addRow({ ...b, amount: Number(b.amount) }));
+res.setHeader('Content-Disposition', 'attachment; filename="projectx-paid-bookings-2026-11-17.xlsx"');
+await wb.xlsx.write(res);   <span class="c">// send the file to the browser</span></pre>
+</div>
+
+<div class="file"><h3>server/controllers/contentController.js</h3><div class="meta">148 lines · gallery, reels, header settings</div>
+<p><b>Gallery</b></p>
+<ul>
+  <li><code>listGallery</code> — all photos in order.</li>
+  <li><code>addGallery</code> — saves 1–30 uploaded images (images only), places new ones at the front, with an optional caption.</li>
+  <li><code>updateGallery</code> — change caption or order.</li>
+  <li><code>deleteGallery</code> — removes the row <b>and</b> deletes the file from <code>uploads/</code>.</li>
+</ul>
+<p><b>Reels</b></p>
+<ul>
+  <li><code>addReel</code> — needs a title plus a video file <i>or</i> an Instagram link (must start with <code>https://www.instagram.com/</code>). Optional cover image. If anything is wrong, uploaded files are cleaned up.</li>
+  <li><code>updateReel</code> — change title/link/order, or replace the video/cover (old file deleted).</li>
+  <li><code>deleteReel</code> — removes row and files.</li>
+</ul>
+<p><b>Settings (header)</b></p>
+<ul>
+  <li><code>getSettings</code> — all header/site settings as one object (public).</li>
+  <li><code>updateSettings</code> — saves only known keys (announcement, hero text, CTA text, Instagram link, phone, email), plus an optional new hero image/video, or removes the hero video. Old replaced files are deleted.</li>
+</ul>
+</div>
+
+<h2>2.7 Utils — helpers</h2>
+<div class="file"><h3>server/utils/email.js</h3><div class="meta">76 lines</div>
+<ul>
+  <li>Sets up Gmail sending with nodemailer, using <code>EMAIL_USER</code>/<code>EMAIL_PASS</code>.</li>
+  <li><code>sendOTPEmail(email, otp, type)</code> — nicely formatted email with the 6-digit code.</li>
+  <li><code>sendBookingEmail(email, name, eventTitle)</code> — "Booking Confirmed" email.</li>
+  <li>If Gmail isn't set up, it doesn't fail: it prints <code>[email disabled] OTP for ...: 123456</code> in the terminal so you can still test.</li>
+</ul>
+</div>
+<div class="file"><h3>server/utils/upload.js</h3><div class="meta">52 lines · file uploads</div>
+<ul>
+  <li>Saves images to <code>uploads/images/</code> and videos to <code>uploads/videos/</code>.</li>
+  <li>Gives each file a random name (time + random letters) so names never clash and can't be guessed.</li>
+  <li><b>File filter:</b> only JPG/PNG/WEBP/GIF/AVIF images and MP4/WEBM/MOV/M4V videos are accepted; anything else is refused.</li>
+  <li>Max size 250 MB per file.</li>
+  <li><code>publicUrl(file)</code> → address like <code>/uploads/images/1794...-a1b2c3.jpg</code>.</li>
+  <li><code>removeUpload(url)</code> → deletes a file, but only inside <code>uploads/</code> (it never touches the built-in <code>/media</code> photos).</li>
+  <li><code>handleUpload</code> → turns upload errors into a friendly message ("File too large (max 250 MB)").</li>
+</ul>
+</div>
+
+<h2>2.8 Seed script — demo data</h2>
+<div class="file"><h3>server/seed.js</h3><div class="meta">255 lines · run with npm run seed --prefix server</div>
+<ol>
+  <li>Connects to MySQL (creates tables if needed).</li>
+  <li><b>Empties</b> bookings, events, otps and users.</li>
+  <li>Creates 10 demo users (1 admin + 9 users), password <code>password123</code>, all verified.</li>
+  <li>Creates 15 Project X events: 3 upcoming placeholders (NYE 2026, Project Goa, Pop &amp; Plunge 4.0) and 12 real past events from Instagram, each with its poster from <code>/media</code>.</li>
+  <li>Creates 3–6 random bookings per event with random status and payment, reducing slots for confirmed ones.</li>
+</ol>
+<div class="tip"><b>Careful:</b> running the seed deletes all real users and bookings. Use it only for testing. It does not touch the gallery, reels or header settings.</div>
+</div>
+
+<h2>2.9 Full API list</h2>
+<p>All addresses start with <code>http://localhost:5000</code>. 🔒 = needs login, 👑 = admin only.</p>
+<table>
+  <tr><th style="width:42%">Address</th><th>What it does</th></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/auth/register</code></td><td>Sign up (sends OTP)</td></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/auth/login</code></td><td>Log in → token</td></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/auth/verify-otp</code></td><td>Verify account code → token</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/events</code></td><td>List events (<code>?search=</code>, <code>?category=</code>)</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/events/:id</code></td><td>One event</td></tr>
+  <tr><td><span class="pill post">POST</span><span class="pill put">PUT</span><span class="pill del">DEL</span><code>/api/events(/:id)</code> 👑</td><td>Create / edit / delete event</td></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/bookings/send-otp</code> 🔒</td><td>Email a booking code</td></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/bookings</code> 🔒</td><td>Request a spot (eventId + otp)</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/bookings/my</code> 🔒</td><td>My bookings (admin: all)</td></tr>
+  <tr><td><span class="pill del">DEL</span><code>/api/bookings/:id</code> 🔒</td><td>Cancel a booking</td></tr>
+  <tr><td><span class="pill put">PUT</span><code>/api/bookings/:id/confirm</code> 👑</td><td>Approve (paid / not paid)</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/admin/stats</code> 👑</td><td>Overview numbers</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/admin/users</code> 👑</td><td>User list with totals</td></tr>
+  <tr><td><span class="pill put">PUT</span><code>/api/admin/users/:id/block</code> 👑</td><td>Block / unblock (<code>{ blocked: true }</code>)</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/admin/bookings</code> 👑</td><td>All bookings</td></tr>
+  <tr><td><span class="pill put">PUT</span><code>/api/admin/bookings/:id/payment</code> 👑</td><td>Record payment</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/admin/export?type=paid|all</code> 👑</td><td>Download Excel</td></tr>
+  <tr><td><span class="pill post">POST</span><code>/api/admin/upload</code> 👑</td><td>Upload one image (event poster)</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/api/gallery</code>, <code>/api/reels</code>, <code>/api/settings</code></td><td>Public content for the home page</td></tr>
+  <tr><td><span class="pill post">POST</span><span class="pill put">PUT</span><span class="pill del">DEL</span><code>/api/gallery(/:id)</code> 👑</td><td>Upload / edit / delete photos</td></tr>
+  <tr><td><span class="pill post">POST</span><span class="pill put">PUT</span><span class="pill del">DEL</span><code>/api/reels(/:id)</code> 👑</td><td>Post / edit / delete reels</td></tr>
+  <tr><td><span class="pill put">PUT</span><code>/api/settings</code> 👑</td><td>Save header &amp; site settings</td></tr>
+  <tr><td><span class="pill get">GET</span><code>/uploads/...</code></td><td>The uploaded files themselves</td></tr>
+</table>
+
+
+<!-- ===================== PART 3 ===================== -->
+<h1 class="part"><span class="num">Part 3</span> — Frontend (client folder)</h1>
+<p>The frontend is a <b>React</b> app. React builds pages from <b>components</b> — small reusable pieces like a navbar, an event card, or a reel player. A component is just a JavaScript function that returns HTML-like code called <b>JSX</b>.</p>
+<pre>const Stat = ({ label, value }) =&gt; (          <span class="c">// a component with two inputs ("props")</span>
+    &lt;div className="card p-5"&gt;
+        &lt;p&gt;{label}&lt;/p&gt;
+        &lt;p className="font-display text-4xl"&gt;{value}&lt;/p&gt;
+    &lt;/div&gt;
+);
+&lt;Stat label="Users" value={9} /&gt;               <span class="c">// using it</span></pre>
+<p>Three React ideas appear in every page:</p>
+<ul>
+  <li><b><code>useState</code></b> — the component's memory, e.g. <code>const [events, setEvents] = useState([])</code>. When you call <code>setEvents(...)</code>, the page redraws itself with the new data.</li>
+  <li><b><code>useEffect</code></b> — "do this when the page opens" (or when something changes), e.g. load events from the backend.</li>
+  <li><b><code>className="..."</code></b> — Tailwind CSS styles: short class names like <code>p-5</code> (padding), <code>text-4xl</code> (big text), <code>bg-brand</code> (red background).</li>
+</ul>
+
+<h2>3.1 Setup &amp; styling files</h2>
+<div class="file"><h3>client/index.html</h3><div class="meta">21 lines</div>
+<p>The single HTML page the browser loads. It sets the tab title "Project X Experience", the favicon (logo), the description for Google, and loads the fonts <b>Anton</b> (big poster headings) and <b>Inter</b> (normal text). It has one empty box <code>&lt;div id="root"&gt;</code> — React fills it with the whole site.</p>
+</div>
+<div class="file"><h3>client/package.json</h3><div class="meta">25 lines</div>
+<p>Frontend libraries: <b>react</b>, <b>react-dom</b> (draws React in the browser), <b>react-router-dom</b> (page addresses like <code>/admin</code>), <b>axios</b> (calls the backend), <b>react-icons</b> (icons like Instagram, trash, play). Tools: <b>vite</b> (fast dev server + build), <b>tailwindcss</b>, <b>postcss</b>, <b>autoprefixer</b>.</p>
+</div>
+<div class="file"><h3>client/vite.config.js · postcss.config.js</h3><div class="meta">7 + 6 lines</div>
+<p>Small setup files. Vite is told to use the React plugin; PostCSS is told to run Tailwind and autoprefixer (adds browser-specific CSS automatically). You will rarely touch these.</p>
+</div>
+<div class="file"><h3>client/tailwind.config.js</h3><div class="meta">26 lines · the brand colours and fonts</div>
+<p>Defines the Project X design tokens so you can write <code>bg-brand</code> or <code>text-mute</code> anywhere:</p>
+<table>
+  <tr><th>Name</th><th>Colour</th><th>Used for</th></tr>
+  <tr><td><code>ink</code></td><td>#0a0a0a</td><td>Page background (near black)</td></tr>
+  <tr><td><code>surface</code> / <code>raised</code></td><td>#141414 / #1c1c1c</td><td>Cards and boxes</td></tr>
+  <tr><td><code>line</code></td><td>#2a2a2a</td><td>Borders</td></tr>
+  <tr><td><code>bone</code></td><td>#f4f1ea</td><td>Main text (off-white)</td></tr>
+  <tr><td><code>mute</code></td><td>#9a9a9a</td><td>Secondary grey text</td></tr>
+  <tr><td><code>brand</code></td><td>#e3182d</td><td>Project X red (buttons, the "X")</td></tr>
+</table>
+<div class="tip"><b>Change the brand red everywhere?</b> Edit the <code>brand</code> colour in this one file.</div>
+</div>
+<div class="file"><h3>client/src/index.css</h3><div class="meta">68 lines · global styles</div>
+<ul>
+  <li>Loads Tailwind and sets the black background + off-white text for the whole site.</li>
+  <li>Defines reusable classes: <code>.btn-brand</code> (red round button), <code>.btn-ghost</code> (outlined button), <code>.field</code> (dark input box), <code>.eyebrow</code> (small red heading), <code>.card</code> (dark box).</li>
+  <li><code>.legacy-dark</code> — repaints the older User Dashboard and payment pages (which still use light classes like <code>bg-white</code>) in dark colours.</li>
+  <li>The marquee animation (the scrolling "Halloween ✕ After Dark ✕ …" strip) and hidden scrollbars.</li>
+</ul>
+</div>
+
+<h2>3.2 Starting point</h2>
+<div class="file"><h3>client/src/main.jsx</h3><div class="meta">16 lines</div>
+<p>The first frontend code that runs. It puts the <code>&lt;App /&gt;</code> into the <code>root</code> box, wrapped in two "providers" so every page can read the login state and the site settings:</p>
+<pre>&lt;SiteProvider&gt;        <span class="c">// header/hero settings from the database</span>
+    &lt;AuthProvider&gt;    <span class="c">// who is logged in</span>
+        &lt;App /&gt;
+    &lt;/AuthProvider&gt;
+&lt;/SiteProvider&gt;</pre>
+</div>
+<div class="file"><h3>client/src/App.jsx</h3><div class="meta">64 lines · the page map (router)</div>
+<p>Decides which page to show for each address, and puts the Navbar on top and Footer at the bottom of every page.</p>
+<table>
+  <tr><th>Address</th><th>Page</th></tr>
+  <tr><td><code>/</code></td><td>Home</td></tr>
+  <tr><td><code>/events/:id</code></td><td>EventDetail (e.g. /events/13)</td></tr>
+  <tr><td><code>/login</code>, <code>/register</code></td><td>Login, Register</td></tr>
+  <tr><td><code>/dashboard</code></td><td>UserDashboard ("My Tickets")</td></tr>
+  <tr><td><code>/admin</code></td><td>Admin dashboard (tabs via <code>?tab=bookings</code> etc.)</td></tr>
+  <tr><td><code>/payment-success</code>, <code>/payment-failed</code></td><td>Result pages</td></tr>
+  <tr><td>anything else</td><td>"404 — This party doesn't exist."</td></tr>
+</table>
+<p>It also has <code>Page</code> (adds space below the fixed navbar) and <code>ScrollToTop</code> (scrolls to the top on every new page, or to a section like <code>#upcoming</code>).</p>
+</div>
+
+<h2>3.3 Helpers &amp; shared data</h2>
+<div class="file"><h3>client/src/utils/axios.js</h3><div class="meta">33 lines · how the frontend calls the backend</div>
+<ul>
+  <li>Creates <code>api</code> — a pre-set axios with the backend address <code>http://localhost:5000/api</code>. Pages just write <code>api.get('/events')</code>.</li>
+  <li><b>Request interceptor:</b> automatically adds the login token to every request.</li>
+  <li><b>Response interceptor:</b> if the server says "blocked", it logs the user out and sends them to <code>/login?blocked=1</code>.</li>
+  <li><code>mediaUrl(url)</code> — uploaded files live on the backend (<code>/uploads/...</code>) so it adds <code>http://localhost:5000</code> in front; built-in photos (<code>/media/...</code>) are left as they are.</li>
+</ul>
+<div class="tip"><b>When you put the site online</b>, change <code>API_ORIGIN</code> here to your real backend address.</div>
+</div>
+<div class="file"><h3>client/src/data/brand.js</h3><div class="meta">16 lines</div>
+<p>Fixed brand text that doesn't need the admin: Instagram handle, a fallback hero photo, the 4 stats ("7K+ Community on Instagram", "&lt;24h Bollywood Edition sold out"…) and the series names in the scrolling strip. Edit this file to change those.</p>
+</div>
+
+<h2>3.4 Context — shared memory</h2>
+<p>A <b>context</b> is memory that every component can read without passing it down by hand.</p>
+<div class="file"><h3>client/src/context/AuthContext.jsx</h3><div class="meta">63 lines · who is logged in</div>
+<ul>
+  <li>Keeps <code>user</code> (name, email, role, token). On page load it reads it back from <code>localStorage</code> (browser storage) so you stay logged in after refresh.</li>
+  <li><code>login(email, password)</code>, <code>register(...)</code>, <code>verifyOTP(email, otp)</code> — call the backend and save the token.</li>
+  <li><code>logout()</code> — clears everything.</li>
+</ul>
+</div>
+<div class="file"><h3>client/src/context/SiteContext.jsx</h3><div class="meta">21 lines · header settings</div>
+<p>Loads <code>/api/settings</code> once when the site opens (announcement bar, hero text/image/video, Instagram link, phone/email). Navbar, Footer, Home and the Header tab read from here. When the admin saves the Header tab, this memory updates so changes appear instantly.</p>
+</div>
+
+<h2>3.5 Components — reusable pieces</h2>
+<div class="file"><h3>client/src/components/Navbar.jsx</h3><div class="meta">78 lines · top bar on every page</div>
+<ul>
+  <li><b>Announcement bar</b> — the red strip at the very top, shown when switched on in the admin.</li>
+  <li>Logo (links home), links: Events, Gallery, My Tickets / Admin, Instagram icon, Login / Join the List / Logout.</li>
+  <li>Transparent over the hero; turns solid black after you scroll 20px.</li>
+  <li>On phones, links fold into a ☰ menu.</li>
+</ul>
+</div>
+<div class="file"><h3>client/src/components/Footer.jsx</h3><div class="meta">42 lines</div>
+<p>Bottom of every page: logo + short description, "Reservations" note, Instagram link, phone and email (from Header &amp; Site settings), and the copyright line.</p>
+</div>
+<div class="file"><h3>client/src/components/Logo.jsx</h3><div class="meta">18 lines</div>
+<p>Draws the "PROJECT <span style="color:#e3182d">X</span> / EXPERIENCE" wordmark in text (so it stays sharp at any size). <code>size="lg"</code> makes a bigger version.</p>
+</div>
+<div class="file"><h3>client/src/components/ReelPlayer.jsx</h3><div class="meta">48 lines · full-screen reel player</div>
+<ul>
+  <li>Opens on top of the page with a dark background. Closes with ✕, Esc, or a click outside.</li>
+  <li>If the reel has an <b>uploaded video</b> → plays it with a normal video player.</li>
+  <li>Otherwise, if it has an <b>Instagram link</b> → shows Instagram's own embedded player.</li>
+  <li>Always shows the title and an <b>"Open on Instagram"</b> button when a link exists.</li>
+  <li><code>instagramEmbed(url)</code> converts any reel/post link into Instagram's embed address.</li>
+</ul>
+<pre><span class="c">// simplified: finds the reel code inside the link and builds the embed address</span>
+const m = url?.match(/instagram\.com\/(?:[^/]+\/)?(reel|reels|p|tv)\/([A-Za-z0-9_-]+)/i);
+<span class="c">// https://www.instagram.com/projectx.exp/reel/Da0SsBbAis3/ → https://www.instagram.com/reel/Da0SsBbAis3/embed/</span></pre>
+</div>
+
+<h2>3.6 Public pages</h2>
+<div class="file"><h3>client/src/pages/Home.jsx</h3><div class="meta">229 lines · the home page</div>
+<p>Loads events, gallery and reels from the backend when it opens, then shows these sections from top to bottom:</p>
+<ol>
+  <li><b>Hero</b> — full-screen background (the hero video if set, otherwise the hero image), the line above the logo, "PROJECT X / EXPERIENCE", subtitle, and two buttons. All text comes from Header &amp; Site settings.</li>
+  <li><b>Series strip</b> — endless scrolling names (Halloween ✕ All White ✕ …).</li>
+  <li><b>Upcoming</b> — event cards with date badge, category, venue and "Entry from" price, plus a search box. Upcoming = date in the future.</li>
+  <li><b>Stats</b> — the 4 numbers from <code>brand.js</code>.</li>
+  <li><b>The Gallery</b> — photos from the database in a masonry layout (no cropping); captions show on hover.</li>
+  <li><b>Reels</b> — horizontal row of reel cards; clicking opens <code>ReelPlayer</code>.</li>
+  <li><b>Past Experiences</b> — events whose date has passed, newest first, with posters.</li>
+</ol>
+<pre>const { upcoming, past } = useMemo(() =&gt; {
+    const now = Date.now();
+    return {
+        upcoming: events.filter(e =&gt; new Date(e.date).getTime() &gt;= now),
+        past:     events.filter(e =&gt; new Date(e.date).getTime() &lt;  now),
+    };
+}, [events]);</pre>
+</div>
+<div class="file"><h3>client/src/pages/EventDetail.jsx</h3><div class="meta">146 lines · one event + booking box</div>
+<ul>
+  <li>Big title over a blurred poster, the full poster, the description and an Instagram button.</li>
+  <li>Booking box: date &amp; time, venue, entry price, spots left.</li>
+  <li><b>Booking in 2 steps:</b> "Request my spot" → server emails a code → user types the 6-digit code → "Verify code &amp; request" → booking saved as pending.</li>
+  <li>The button is disabled when the event has <b>ended</b>, is <b>sold out</b>, or the request was already sent. Not logged in → sends you to Login.</li>
+  <li>On phones the booking box appears first, then the poster.</li>
+</ul>
+</div>
+<div class="file"><h3>client/src/pages/Login.jsx</h3><div class="meta">107 lines</div>
+<p>Email + password form. If the account isn't verified yet, it switches to an OTP box. After login, admins go to <code>/admin</code> and users to <code>/dashboard</code>. Shows "Your account has been blocked" when sent here after a block.</p>
+</div>
+<div class="file"><h3>client/src/pages/Register.jsx</h3><div class="meta">117 lines</div>
+<p>"Join the list": name, email, password → the server emails a code → enter the code → account verified and logged in.</p>
+</div>
+<div class="file"><h3>client/src/pages/UserDashboard.jsx</h3><div class="meta">132 lines · "My Tickets"</div>
+<p>Shows the logged-in user's bookings with event, date, status (pending / confirmed / cancelled) and payment status. The user can cancel a booking request. (Styled dark through <code>.legacy-dark</code>.)</p>
+</div>
+<div class="file"><h3>client/src/pages/PaymentSuccess.jsx · PaymentFailed.jsx</h3><div class="meta">25 lines each</div>
+<p>Simple result pages ("Booking Confirmed!" / failed) with links to My Tickets and back to events. They're ready for when an online payment gateway is added.</p>
+</div>
+
+
+<h2>3.7 Admin dashboard pages (pages/admin folder)</h2>
+<p>All admin screens live in one page, <code>/admin</code>, with a menu of 7 tabs. The tab is kept in the address (<code>/admin?tab=users</code>) so refreshing keeps you on the same tab. Every tab talks only to admin-protected API addresses, so even if a normal user typed <code>/admin</code>, the server would refuse them.</p>
+
+<div class="file"><h3>pages/admin/AdminDashboard.jsx</h3><div class="meta">83 lines · the frame around all tabs</div>
+<ul>
+  <li>Checks you're an admin; otherwise sends you to Login.</li>
+  <li>Draws the "ADMIN" title and the tab menu (left sidebar on computers, a sideways-scrolling row on phones).</li>
+  <li>Shows the selected tab and the <b>toast</b> — the small green/red message in the bottom-right ("Payment recorded", "Upload failed").</li>
+</ul>
+<pre>const TABS = [
+    { id: 'overview', label: 'Overview',            el: Overview },
+    { id: 'events',   label: 'Events &amp; Slots',      el: EventsTab },
+    { id: 'bookings', label: 'Bookings &amp; Payments', el: BookingsTab },
+    { id: 'users',    label: 'Users',               el: UsersTab },
+    { id: 'gallery',  label: 'Gallery',             el: GalleryTab },
+    { id: 'reels',    label: 'Reels',               el: ReelsTab },
+    { id: 'header',   label: 'Header &amp; Site',      el: HeaderTab },
+];</pre>
+<div class="tip"><b>Adding a new admin tab:</b> create a new file in <code>pages/admin/</code>, import it here, and add one line to <code>TABS</code>.</div>
+</div>
+
+<div class="file"><h3>pages/admin/ui.jsx</h3><div class="meta">91 lines · shared admin building blocks</div>
+<table>
+  <tr><th style="width:26%">Piece</th><th>What it is</th></tr>
+  <tr><td><code>Stat</code></td><td>A number card (label + big value + small hint).</td></tr>
+  <tr><td><code>Badge</code></td><td>Coloured pill: pending (yellow), confirmed/paid/active (green), not paid/blocked (red), admin/upcoming (blue).</td></tr>
+  <tr><td><code>Modal</code></td><td>Pop-up window (closes on ✕, Esc or click outside).</td></tr>
+  <tr><td><code>Field</code>, <code>Empty</code></td><td>Labelled form field; "nothing here" box.</td></tr>
+  <tr><td><code>btnSm…</code></td><td>Small button styles (brand, ghost, danger, good).</td></tr>
+  <tr><td><code>useNotify</code></td><td>Shows a toast message from any tab.</td></tr>
+  <tr><td><code>inr</code>, <code>fmtDate</code>, <code>errMsg</code></td><td>Format ₹ amounts (₹22,000), dates (17 Nov 2026), and error messages.</td></tr>
+  <tr><td><code>downloadExcel(type)</code></td><td>Downloads the Excel file with your admin token and saves it with the right file name.</td></tr>
+</table>
+</div>
+
+<div class="file"><h3>pages/admin/Overview.jsx</h3><div class="meta">79 lines · first screen</div>
+<ul>
+  <li>4 cards: <b>Revenue collected</b>, <b>Pending requests</b>, <b>Unpaid confirmed</b> (money still to collect), <b>Users</b> (new + blocked).</li>
+  <li>Quick buttons: Review pending requests, Download paid users (Excel), Create event, Upload photos, Post a reel.</li>
+  <li>Table <b>"Slots &amp; revenue by event"</b> — each event with a red bar showing slots filled, pending count and revenue. Upcoming events are listed first.</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/EventsTab.jsx</h3><div class="meta">162 lines · Events &amp; Slots</div>
+<ul>
+  <li>Filter: upcoming / past / all. Each event shows poster, date, venue, price, slots filled, pending requests and revenue.</li>
+  <li><b>New event / Edit</b> opens a form: title, date &amp; time, category, venue, ticket price (0 = guestlist), total slots, <b>slots left</b> (edit only — useful if you sell offline), description, and the <b>poster</b> (upload a file or paste an image address).</li>
+  <li><b>View</b> opens the public event page in a new tab. <b>Delete</b> asks for confirmation; bookings stay as "Deleted event".</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/BookingsTab.jsx</h3><div class="meta">161 lines · Bookings &amp; Payments</div>
+<ul>
+  <li>Status buttons with counts: Pending, Confirmed, Cancelled, All. Search by name, email, phone or payment reference. Filter by payment and by event. Shows how much is paid in the current view.</li>
+  <li>Each booking card: user, badges (status, payment, blocked), email/phone, event with slots left, booking number, request time, amount, and payment details.</li>
+  <li>Buttons:
+    <ul>
+      <li><b>Approve · paid</b> / <b>Approve · unpaid</b> — confirms the booking, takes a slot, emails the user.</li>
+      <li><b>Payment</b> — opens "Record payment": amount, method (UPI, Cash, Card, Bank transfer, Online, Complimentary), reference/transaction ID. "Save as paid" or "Mark not paid".</li>
+      <li><b>Cancel</b> — cancels (gives the slot back if it was confirmed).</li>
+    </ul>
+  </li>
+  <li>Top-right: <b>Excel</b> — "Paid users" or "All bookings".</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/UsersTab.jsx</h3><div class="meta">97 lines · user management</div>
+<ul>
+  <li>Filters: All, Paying (paid at least once), Unverified, Blocked. Search by name/email/phone.</li>
+  <li>Table: user, status (Active / Blocked / Admin, Unverified), bookings (confirmed), total paid, join date.</li>
+  <li><b>Block</b> (asks first) / <b>Unblock</b>. Admins have no block button.</li>
+  <li><b>Download Excel</b> — same 3-sheet file, includes the Users sheet.</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/GalleryTab.jsx</h3><div class="meta">134 lines · photo uploads</div>
+<ul>
+  <li>Upload box: <b>drag &amp; drop</b> photos or click to choose (up to 30). Shows small previews; remove any with ✕. Optional caption for the batch. Shows upload percentage.</li>
+  <li>"On the site" grid: every gallery photo with an editable caption (saves when you click away), ← → buttons to change order, and 🗑 delete.</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/ReelsTab.jsx</h3><div class="meta">137 lines · reels</div>
+<ul>
+  <li>"Post a reel" form: title, <b>Instagram reel link</b>, <b>video file</b> (MP4/MOV/WEBM, up to 250 MB) and optional <b>cover image</b>. You need at least a video or a link. Shows upload percentage.</li>
+  <li>"On the site" grid: cover (or first video frame), ▶ to preview in the same player visitors see, "Video" / "Instagram" labels, ↑ ↓ order, ✏ edit (change title/link, replace video/cover), 🗑 delete.</li>
+</ul>
+</div>
+
+<div class="file"><h3>pages/admin/HeaderTab.jsx</h3><div class="meta">92 lines · Header &amp; Site</div>
+<ul>
+  <li><b>Announcement bar:</b> on/off switch, text (max 160 characters), link when clicked.</li>
+  <li><b>Hero:</b> small line above the logo, subtitle, main button text, background image (upload), background video (upload, plays muted on loop) with a "Remove video" button.</li>
+  <li><b>Contact &amp; social:</b> Instagram URL, phone and email shown in the footer.</li>
+  <li><b>Save changes</b> (sticky at the bottom) — goes live immediately.</li>
+</ul>
+</div>
+
+
+<!-- ===================== PART 4 ===================== -->
+<h1 class="part"><span class="num">Part 4</span> — How things work, step by step</h1>
+<p>These stories follow one action through all the files, so you can see how everything connects.</p>
+
+<h2>4.1 Sign up with OTP</h2>
+<ol class="steps">
+  <li>User fills name/email/password on <b>Register.jsx</b> and clicks "Join".</li>
+  <li><b>AuthContext</b> <code>register()</code> sends <code>POST /api/auth/register</code>.</li>
+  <li><b>routes/auth.js</b> → <b>authController.register</b>: checks the email is new, hashes the password, saves the user (not verified).</li>
+  <li><b>OTP.replace</b> saves a 6-digit code; <b>email.js</b> emails it (or prints it in the terminal).</li>
+  <li>User types the code → <code>POST /api/auth/verify-otp</code> → <b>verifyOTP</b> checks it's correct and under 5 minutes old → marks verified → returns a token.</li>
+  <li>AuthContext saves the token in the browser; the user is logged in and lands on My Tickets.</li>
+</ol>
+
+<h2>4.2 Log in</h2>
+<ol class="steps">
+  <li><b>Login.jsx</b> → <code>POST /api/auth/login</code>.</li>
+  <li><b>authController.login</b>: user exists? password matches (bcrypt)? not blocked? verified?</li>
+  <li>Returns <code>{ name, email, role, token }</code>. From now on <b>axios.js</b> sends the token with every request automatically.</li>
+  <li>Admin → <code>/admin</code>; user → <code>/dashboard</code>.</li>
+</ol>
+
+<h2>4.3 Booking a spot</h2>
+<ol class="steps">
+  <li>On <b>EventDetail.jsx</b> the user clicks "Request my spot" → <code>POST /api/bookings/send-otp</code> (needs login: <b>protect</b> checks the token).</li>
+  <li><b>bookingController.sendBookingOTP</b> emails a booking code.</li>
+  <li>User enters the code → <code>POST /api/bookings</code> with <code>{ eventId, otp }</code>.</li>
+  <li><b>bookEvent</b> checks: code valid → event exists → event not past → slots left → no double booking.</li>
+  <li><b>Booking.create</b> saves a <b>pending, not paid</b> booking with amount = ticket price.</li>
+  <li>The page shows "You're on the request list". Nothing is charged; no slot is used yet.</li>
+</ol>
+
+<h2>4.4 Admin approves &amp; records payment</h2>
+<ol class="steps">
+  <li>Admin opens <b>Bookings &amp; Payments</b> → <code>GET /api/admin/bookings</code> (protect + admin).</li>
+  <li>Clicks <b>Approve · paid</b> → <code>PUT /api/bookings/:id/confirm</code> with <code>{ paymentStatus: 'paid' }</code>.</li>
+  <li><b>confirmBooking</b> runs a transaction: locks the booking + event, checks a slot is free, sets confirmed + paid (+ paid time), reduces slots by 1, commits.</li>
+  <li><b>email.js</b> sends "Booking Confirmed" to the user.</li>
+  <li>Later, if the user pays by UPI: admin clicks <b>Payment</b> → enters method + UTR/reference → <code>PUT /api/admin/bookings/:id/payment</code> → <b>adminController.updatePayment</b> saves it.</li>
+  <li>The Overview "Revenue collected" and the Excel file include it straight away.</li>
+</ol>
+
+<h2>4.5 Blocking a user</h2>
+<ol class="steps">
+  <li>Admin → <b>Users</b> → <b>Block</b> → confirm → <code>PUT /api/admin/users/:id/block</code> with <code>{ blocked: true }</code>.</li>
+  <li><b>setBlocked</b> refuses if it's you or an admin; otherwise sets <code>is_blocked = TRUE</code> and cancels their pending requests.</li>
+  <li>The user's next action anywhere hits <b>middleware/auth.js</b>, which answers 403 "blocked".</li>
+  <li><b>axios.js</b> sees "blocked", logs them out and shows the Login page with the blocked message. Logging in again is refused by <b>authController.login</b>.</li>
+  <li><b>Unblock</b> reverses it (their cancelled requests stay cancelled).</li>
+</ol>
+
+<h2>4.6 Uploading photos &amp; reels</h2>
+<ol class="steps">
+  <li><b>GalleryTab.jsx</b> packs the chosen files into a <code>FormData</code> (a "parcel" of files + text) and sends <code>POST /api/gallery</code>, showing the upload %.</li>
+  <li><b>routes/content.js</b>: protect + admin → <b>upload.js</b> (multer) checks type and size and saves files to <code>server/uploads/images/</code> with random names.</li>
+  <li><b>contentController.addGallery</b> writes one row per photo in the <code>gallery</code> table with the address <code>/uploads/images/…</code>.</li>
+  <li>The home page loads <code>GET /api/gallery</code>, and <code>mediaUrl()</code> turns the address into <code>http://localhost:5000/uploads/images/…</code> so the browser can show it.</li>
+  <li>Reels work the same way via <code>POST /api/reels</code>, with the video going to <code>uploads/videos/</code>.</li>
+</ol>
+
+<h2>4.7 Playing a reel</h2>
+<ol class="steps">
+  <li>Visitor clicks a reel card on <b>Home.jsx</b> → <code>setPlaying(reel)</code> opens <b>ReelPlayer</b>.</li>
+  <li>Uploaded video? → plays in the site's video player.</li>
+  <li>Only an Instagram link? → shows Instagram's embedded player. For some reels Instagram shows "Watch on Instagram" instead of playing — that's Instagram's rule, not the site.</li>
+  <li>"Open on Instagram" button opens the original reel in a new tab.</li>
+</ol>
+
+<h2>4.8 Excel download</h2>
+<ol class="steps">
+  <li>Admin clicks "Download paid users" → <code>downloadExcel('paid')</code> in <b>ui.jsx</b> → <code>GET /api/admin/export?type=paid</code> with the token.</li>
+  <li><b>exportExcel</b> runs 3 SQL queries (paid bookings, revenue per event, users) and builds a workbook with exceljs.</li>
+  <li>The browser receives the file and saves it as <code>projectx-paid-bookings-YYYY-MM-DD.xlsx</code>.</li>
+</ol>
+<table>
+  <tr><th>Sheet</th><th>Columns</th></tr>
+  <tr><td>Paid Bookings</td><td>Booking #, Name, Email, Phone, Event, Event Date, Venue, Ticket Amount, Payment, Method, Reference, Paid At, Booking Status, Booked At + TOTAL</td></tr>
+  <tr><td>Revenue by Event</td><td>Event, Date, Venue, Ticket Price, Slots, Slots Left, Confirmed, Pending, Paid Tickets, Revenue + TOTAL</td></tr>
+  <tr><td>Users</td><td>User #, Name, Email, Phone, Role, Verified, Blocked, Bookings, Total Paid, Joined</td></tr>
+</table>
+
+<h2>4.9 Changing the header</h2>
+<ol class="steps">
+  <li>Admin edits text or picks a new hero image/video in <b>HeaderTab.jsx</b> → "Save changes" → <code>PUT /api/settings</code>.</li>
+  <li><b>contentController.updateSettings</b> saves each setting in the <code>settings</code> table and deletes any replaced upload.</li>
+  <li>The answer updates <b>SiteContext</b>, so the Navbar announcement bar, the Home hero and the Footer change instantly for you, and for visitors on their next page load.</li>
+</ol>
+
+<!-- ===================== PART 5 ===================== -->
+<h1 class="part"><span class="num">Part 5</span> — Extras</h1>
+
+<h2>5.1 Common changes — where to edit</h2>
+<table>
+  <tr><th style="width:44%">I want to…</th><th>Do this</th></tr>
+  <tr><td>Change the announcement, hero text/photo/video, Instagram link, phone, email</td><td>Admin → <b>Header &amp; Site</b> (no code)</td></tr>
+  <tr><td>Add/edit/delete events, posters, prices, slots</td><td>Admin → <b>Events &amp; Slots</b></td></tr>
+  <tr><td>Add or remove gallery photos / reels</td><td>Admin → <b>Gallery</b> / <b>Reels</b></td></tr>
+  <tr><td>Change the brand red or other colours</td><td><code>client/tailwind.config.js</code> → <code>colors</code></td></tr>
+  <tr><td>Change fonts</td><td><code>client/index.html</code> (Google Fonts link) + <code>tailwind.config.js</code> → <code>fontFamily</code></td></tr>
+  <tr><td>Change the 4 stats or the scrolling series names</td><td><code>client/src/data/brand.js</code></td></tr>
+  <tr><td>Change footer wording</td><td><code>client/src/components/Footer.jsx</code></td></tr>
+  <tr><td>Change email wording (OTP, confirmation)</td><td><code>server/utils/email.js</code></td></tr>
+  <tr><td>OTP valid for longer/shorter</td><td><code>server/models/OTP.js</code> → <code>EXPIRY_MINUTES</code></td></tr>
+  <tr><td>Bigger/smaller upload limit or new file types</td><td><code>server/utils/upload.js</code></td></tr>
+  <tr><td>Turn on real emails</td><td><code>server/.env</code> → <code>EMAIL_USER</code> + Gmail App Password in <code>EMAIL_PASS</code></td></tr>
+  <tr><td>Put the site online</td><td>Change <code>API_ORIGIN</code> in <code>client/src/utils/axios.js</code>, set a strong <code>JWT_SECRET</code>, run <code>npm run build</code></td></tr>
+  <tr><td>Add a new database column</td><td><code>server/schema.sql</code> + the list in <code>server/config/migrations.js</code></td></tr>
+</table>
+
+<h2>5.2 Security notes</h2>
+<ul>
+  <li><b>Passwords</b> are hashed with bcrypt — never stored as plain text.</li>
+  <li><b>Login tokens (JWT)</b> are signed with <code>JWT_SECRET</code>. Use a long random secret in production and never share <code>.env</code>.</li>
+  <li><b>Every admin action is checked on the server</b> (protect + admin), not just hidden in the website.</li>
+  <li><b>SQL injection protection:</b> all queries use <code>?</code> placeholders.</li>
+  <li><b>Uploads:</b> only image/video types, max 250 MB, random file names, and deletes are limited to the uploads folder.</li>
+  <li><b>Sign-up can't create admins</b> — role is always "user". Admins are created in the database (or by the seed).</li>
+  <li><b>Backups:</b> back up the MySQL database <i>and</i> the <code>server/uploads</code> folder together.</li>
+  <li><b>Payments</b> are recorded by the admin; no card or UPI details are handled by the site.</li>
+</ul>
+
+<h2>5.3 Word list (glossary)</h2>
+<table>
+  <tr><th style="width:24%">Word</th><th>Meaning</th></tr>
+  <tr><td>API</td><td>The list of addresses the frontend calls to get or change data.</td></tr>
+  <tr><td>Endpoint / Route</td><td>One address in the API, e.g. <code>GET /api/events</code>.</td></tr>
+  <tr><td>GET / POST / PUT / DELETE</td><td>Read / create / update / remove.</td></tr>
+  <tr><td>JSON</td><td>The text format data travels in: <code>{ "title": "NYE 2026" }</code>.</td></tr>
+  <tr><td>Controller</td><td>Backend function that does the work for one route.</td></tr>
+  <tr><td>Model</td><td>Backend functions that read/write one database table.</td></tr>
+  <tr><td>Middleware</td><td>A check that runs before the controller (login, admin).</td></tr>
+  <tr><td>JWT / token</td><td>A signed "wristband" proving you're logged in.</td></tr>
+  <tr><td>OTP</td><td>One-time password — the 6-digit email code.</td></tr>
+  <tr><td>Hash (bcrypt)</td><td>One-way scrambling of passwords.</td></tr>
+  <tr><td>Transaction</td><td>Several database changes saved together or not at all.</td></tr>
+  <tr><td>Foreign key</td><td>A column that points to a row in another table (booking → user).</td></tr>
+  <tr><td>Migration</td><td>A safe change to the database structure (e.g. adding a column).</td></tr>
+  <tr><td>Seed</td><td>Script that fills the database with demo data.</td></tr>
+  <tr><td>Component</td><td>A reusable React piece (Navbar, ReelPlayer).</td></tr>
+  <tr><td>Props</td><td>Inputs given to a component.</td></tr>
+  <tr><td>State (useState)</td><td>A component's memory; changing it redraws the page.</td></tr>
+  <tr><td>useEffect</td><td>"Run this when the page opens / when X changes."</td></tr>
+  <tr><td>Context</td><td>Memory shared by all components (logged-in user, site settings).</td></tr>
+  <tr><td>Router</td><td>Chooses the page for each address (<code>/admin</code> → Admin).</td></tr>
+  <tr><td>Tailwind class</td><td>Short style name, e.g. <code>p-5</code> padding, <code>text-brand</code> red text.</td></tr>
+  <tr><td>Multer / FormData</td><td>How files are sent (FormData) and received (multer).</td></tr>
+  <tr><td>localhost</td><td>"This computer". 5173 = website, 5000 = backend, 3306 = MySQL.</td></tr>
+</table>
+<p style="margin-top:8mm; color:#888; font-size:9pt;">End of guide · Project X Experience · built with React, Node.js/Express and MySQL.</p>
+</body>
+</html>

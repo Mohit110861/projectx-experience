@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="#4a0912"/><stop offset="0.5" stop-color="#150306"/><stop offset="1" stop-color="#0a0a0a"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#g)"/>
+  <text x="540" y="820" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="900" fill="#e3182d" opacity="0.22">X</text>
+  <text x="540" y="300" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="110" fill="#f4f1ea">PROJECT<tspan fill="#e3182d"> X</tspan></text>
+  <text x="540" y="355" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#f4f1ea" letter-spacing="24">EXPERIENCE</text>
+  <rect x="440" y="420" width="200" height="3" fill="#e3182d"/>
+  <text x="540" y="490" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#f4f1ea" letter-spacing="14">COMING SOON</text>
+</svg>

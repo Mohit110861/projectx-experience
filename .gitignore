@@ -1,0 +1,5 @@
+node_modules
+.env
+# Admin uploads (gallery photos, reel videos)
+server/uploads/
+.claude/
