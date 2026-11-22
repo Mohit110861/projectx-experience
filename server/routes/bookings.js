@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { bookEvent, confirmBooking, getMyBookings, cancelBooking, sendBookingOTP } = require('../controllers/bookingController');
 const { protect, admin } = require('../middleware/auth');
+const { otpLimiter } = require('../middleware/rateLimit');
 
-router.post('/send-otp', protect, sendBookingOTP);
-router.post('/', protect, bookEvent);
+router.post('/send-otp', protect, otpLimiter, sendBookingOTP);
+router.post('/', protect, otpLimiter, bookEvent);
 router.put('/:id/confirm', protect, admin, confirmBooking);
 router.get('/my', protect, getMyBookings);
 router.delete('/:id', protect, cancelBooking);

@@ -4,7 +4,7 @@ const Event = require('../models/Event');
 const OTP = require('../models/OTP');
 const { sendBookingEmail, sendOTPEmail } = require('../utils/email');
 
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
+const { generateOTP } = require('../utils/otp');
 
 exports.sendBookingOTP = async (req, res) => {
     try {
