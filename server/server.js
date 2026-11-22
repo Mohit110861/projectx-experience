@@ -15,6 +15,12 @@ const { UPLOAD_ROOT } = require('./utils/upload');
 
 const app = express();
 
+// Set TRUST_PROXY=1 when running behind a proxy/load balancer (Render, Railway,
+// Nginx...) so rate limiting sees each visitor's real IP address.
+if (process.env.TRUST_PROXY) {
+  app.set('trust proxy', Number(process.env.TRUST_PROXY) || process.env.TRUST_PROXY);
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
